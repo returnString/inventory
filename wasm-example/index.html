@@ -1,0 +1,31 @@
+<html>
+
+<head>
+	<title>attaché example</title>
+</head>
+
+<body>
+	<script type="module">
+		import init, * as example from "./pkg/inventory_wasm_example.js";
+		init().then(() => {
+			console.dir(example);
+
+			const initFuncs = Object.entries(example).flatMap(([name, func]) => {
+				if (name.startsWith('__inventory')) {
+					return [func];
+				}
+
+				return [];
+			});
+
+			for (const initFunc of initFuncs) {
+				initFunc();
+			}
+
+			example.log_flags();
+			example.log_other_things();
+		});
+	</script>
+</body>
+
+</html>
