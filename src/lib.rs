@@ -419,35 +419,9 @@ macro_rules! submit {
     };
 }
 
-#[cfg(target_family = "wasm")]
-pub extern crate gensym;
-#[cfg(target_family = "wasm")]
-pub extern crate paste;
-#[cfg(target_family = "wasm")]
-pub extern crate wasm_bindgen;
-
-// Not public API.
 #[doc(hidden)]
-#[macro_export]
-macro_rules! _wasm_export {
-    ($gensym:ident $($value:tt)*) => {{
-        $crate::paste::item! {
-            #[$crate::wasm_bindgen::prelude::wasm_bindgen]
-            pub unsafe fn [<__inventory_ $gensym>]() {
-                __ctor();
-            }
-        }
-    }};
-}
-
-// Not public API.
-#[doc(hidden)]
-#[macro_export]
-macro_rules! wasm_export {
-    ($($value:tt)*) => {
-        $crate::gensym::gensym! { $crate::_wasm_export! { $($value)* } }
-    };
-}
+#[cfg(target_family = "wasm")]
+pub use wasm_init::wasm_init;
 
 // Not public API.
 #[doc(hidden)]
@@ -491,7 +465,9 @@ macro_rules! __do_submit {
             static __CTOR: unsafe extern "C" fn() = __ctor;
 
             #[cfg(target_family = "wasm")]
-            $crate::wasm_export!($($value)*)
+            $crate::wasm_init! {
+                unsafe { __ctor(); }
+            }
         };
     };
 
