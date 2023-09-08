@@ -23,4 +23,4 @@ targets = ["x86_64-unknown-linux-gnu"]
 rustdoc-args = ["--generate-link-to-definition"]
 
 [target.'cfg(target_family = "wasm")'.dependencies]
-wasm-init = "0.1"
+wasm-init = "0.2"
